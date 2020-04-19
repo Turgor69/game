@@ -1,104 +1,107 @@
 #include<iostream>
 #include <ncurses.h>
-struct pos{
+struct pos {
 	int x;
 	int y;
 	char symbol;
 };
-struct Food{
+struct Food {
 	pos cord;
 	int value;
 };
 const int max_X = 40;
 const int max_Y = 30;
-int proverka(int pos &cord,pos *snake,int d)
+int proverka(int pos& cord, pos* snake, int d)
 {
-for (int i=0;i<d;i++)
+	for (int i = 0; i < d; i++)
+	{
+		if (cord == snake[i])
+			return true;
+	}
+	return false;
+}
+int naprav(int ch, int nap)
 {
-if (cord==snake[i])
-return true;
+	switch (ch) {
+	case 'w':  if (nap != 3) nap = 2; break;
+	case 's':  if (nap != 2) nap = 3; break;
+	case 'a':  if (nap != 0) nap = 1; break;
+	case 'd':  if (nap != 1) nap = 0; break;
+	}
 }
-return false;
-}
-int naprav(int ch,int nap)
-{
-		switch (ch) {
-		    case 'w':  if (nap!=3) nap = 2; break;
-		    case 's':  if (nap!=2) nap = 3; break;
-		    case 'a':  if (nap!=0) nap = 1; break;
-		    case 'd':  if (nap!=1) nap = 0; break;
-		}
-}
-void foodcreate(Food food,pos *snake,int d){	
-	do{
-		food.cord.x = rand()%max_X+1;
-		food.cord.y = rand()%max_Y+1;
-	}while(proverka(snake,food.cord,d));
-	food.value = rand()%10;
+void foodcreate(Food food, pos* snake, int d) {
+	do {
+		food.cord.x = rand() % max_X + 1;
+		food.cord.y = rand() % max_Y + 1;
+	} while (proverka(snake, food.cord, d));
+	food.value = rand() % 10;
 	printpos(food.cord);
 	refresh();
 }
-void printpos(const pos cord,char &f){
-	move(cord.y,cord.x);
-	addch(c);
+void printpos(const pos cord, char& f) {
+	move(cord.y, cord.x);
+	addch(f);
 }
-int drowsnake(pos snake,int d,char &f)
+int drowsnake(pos snake, int d, char& f)
 {
-for (int i=0;i<d;i++)
+	for (int i = 0; i < d; i++)
 	{
-	if (c!=' ') printpos(snake[i],c);
+		if (f != ' ') printpos(snake[i], c);
 	}
 }
-int rost(pos headcord,Food food.cord,int d)
+int rost(pos snake,pos headcord, Food food.cord, int d)
 {
-	for (int j=0;j<food.value;j++){
+	for (int j = 0; j < food.value; j++) {
 		snake[d] = headcord;
 		snake[d].symbol = '#';
-		d++;	
-				}
+		d++;
+	}
 }
 int main()
 {
-	for (int i=0;i<max_X+2;i++){
-		printpos({i,0},'0');
-		printpos({i,max_Y+1},'0');	
+	for (int i = 0; i < max_X + 2; i++) {
+		printpos({ i,0 }, '0');
+		printpos({ i,max_Y + 1 }, '0');
 	}
-	for (int i=0;i<max_Y+2;i++){
-		printpos({0,i},'0');
-		printpos({max_X+1,i},'0');	
+	for (int i = 0; i < max_Y + 2; i++) {
+		printpos({ 0,i }, '0');
+		printpos({ max_X + 1,i }, '0');
 	}
-	pos nextnap[4]={{1,0},{-1,0},{0,-1},{0,1}};
-	int d=4;
-	pos headcord.x =5 ;
-	headcord.y=15;
+	pos snake[max_X * max_Y];
+	Food food;
+	pos nextnap[4] = { {1,0},{-1,0},{0,-1},{0,1} };
+	int d = 4;
+	pos headcord.x = 5;
+	headcord.y = 15;
 	headcord.symbol = '#';
-	for (int i=1;i<d;i++){
-		snake[i].x = 5+i;
+	for (int i = 1; i < d; i++) {
+		snake[i].x = 5 + i;
 		snake[i].y = 15;
 		snake[i].symbol = '#';
-		printpos(snake[i],'#');	
+		printpos(snake[i], '#');
 	}
 	int nap = 1;
+	int r = 0;
 	bool gameover = false;
 	int score = 0;
-	while(!gameover)
+	while (!gameover)
 	{
-		int ch=getch();
-		naprav(ch,nap);
-		pos nextpos=headcord+nextnap[nap];
-		gameover = proverka(snake,nextpos,d);
-		if (!gameover){
-			drawsnake(snake,d,' ');
-			snake[Cr] = headcord;
+		int ch = getch();
+		naprav(ch, nap);
+		pos nextpos = headcord + nextnap[nap];
+		gameover = proverka(snake, nextpos, d);
+		if (!gameover) {
+			drowsnake(snake, d, ' ');
+			snake[r] = headcord;
 			r++;
-				if (r >= d){
-					CurrentIndex = 0;
-				}
-			drawsnake(snake,d,'#');
+			if (r >= d) {
+				r = 0;
+			}
+			drowsnake(snake, d, '#');
 			if (food.cord == headcord)
-				rost(headcord,food.value,d);
-			setfood(food,rand()%4+1,snake,d);	
+				rost(headcord, food.value, d);
+			foodcreate(food, rand() % 4 + 1, snake, d);
 		}
-		usleep(10000 / d);	
+		usleep(10000 / d);
 	}
 }
