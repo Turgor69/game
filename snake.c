@@ -6,7 +6,7 @@ struct pos {
 	int x;
 	int y;
 	char symbol;
-	};
+};
 struct food {
 	struct pos cord;
 	int value;
@@ -15,56 +15,47 @@ const int max_X = 40;
 const int max_Y = 30;
 bool proverka(struct pos cord, struct pos *snake, int d)
 {
-	if ((snake[0].x = max_X) || (snake[0].y = max_Y))
-	return false;
 	for (int i = 0; i < d; i++)
 	{
 		if ((cord.x == snake[i].x) && (cord.y == snake[i].y))
 		return true;
 	}
-	
 	return false;
 }
 void printpos(int y, int x,char f) {
 	move(y,x);
 	addch(f);
-	refresh();
 }
 int naprav(int ch, int nap)
 {
 	switch (ch) {
-	case 'w': if(nap != 3) return 2;break;
-	case 's': if(nap != 2) return 3;break;
-	case 'a': if(nap != 0) return 1; break;
-	case 'd': if(nap != 1) return 0; break;
+		case 'w': if(nap != 2) return 3;break;
+		case 's': if(nap != 3) return 2;break;
+		case 'a': if(nap != 0) return 1; break;
+		case 'd': if(nap != 1) return 0; break;
 	}
 	return nap;
 }
-void foodcreate(struct food fod,int val, struct pos *snake, int d) {
+struct food foodcreate(struct food fod,int val, struct pos *snake, int d) {
 	do {
 		fod.cord.x = rand() % max_X + 1;
 		fod.cord.y = rand() % max_Y + 1;
 	} while (proverka(fod.cord,snake, d));
-	fod.value = val + 48;
-	char valc = val + 48;
-	printpos(fod.cord.y,fod.cord.x,valc);
+	fod.value = val;
+	char valc = val;
+	printpos(fod.cord.y,fod.cord.x,valc+48);
 	refresh();
+	return fod;
 }
 void drowsnake(struct pos *snake, int d, char f)
 {
 	for (int i = 0; i < d; i++)
 	{
-		printpos(snake[i].y,snake[i].x, f);
+	printpos(snake[i].y,snake[i].x, f);
 	}
+	refresh();
 }
 
-int rost(struct pos *snake,int x,int y, int value, int d)
-{
-		snake[d].x = x;
-		snake[d].y = y;
-		snake[d].symbol = '#';
-		return d++;
-}
 int main()
 {
 	initscr();
@@ -89,44 +80,55 @@ int main()
 		snake[i].x = 5 + i;
 		snake[i].y = 15;
 		snake[i].symbol = '#';
-		printpos(snake[i].y,snake[i].x, '#');
 	}
+	drowsnake(snake, d,'#');
 	refresh();
-	int nap1 = 3;
+	int nap1 = 1;
 	struct pos nextpos;
+	int r = 3;
 	int ch;
 	bool gameover = false;
-	while (!gameover)
-	{
+	fod = foodcreate(fod,rand()%4+1,snake, d);
+	while (!gameover){
 		ch = getch();
 		nap1 = naprav(ch, nap1);
 		nextpos.x = snake[0].x + nextnap[0][nap1];
 		nextpos.y = snake[0].y + nextnap[1][nap1];
+		if (nextpos.x > max_X)
+			nextpos.x-=max_X;
+		if (nextpos.x < 1)
+			nextpos.x+=max_X;
+		if (nextpos.y > max_Y)
+			nextpos.y-=max_Y;
+		if (nextpos.y < 1)
+			nextpos.y+=max_Y;
 		gameover = proverka(nextpos, snake, d);
 		if (!gameover) {
 			struct pos lastpos;
 			lastpos.x = snake[d-1].x;
 			lastpos.y = snake[d-1].y;
-			for (int r=d-1;r>0;r--){
+			drowsnake(snake, d,' ');
+			for (int r = d - 1;r>0;r--){
 				snake[r].x = snake[r-1].x;
 				snake[r].y = snake[r-1].y;
 			}
+			if (ro>0){
+				snake[d].x = lastpos.x;
+				snake[d].y = lastpos.y;
+				snake[d].symbol = '#';
+				d++;
+				ro--;
+			}
 			if ((fod.cord.x == snake[0].x) && (fod.cord.y == snake[0].y)){
 				ro+=fod.value;
-				if (ro>0){
-					d=rost(snake,lastpos.x,lastpos.y,ro, d);
-					ro--;
-				}
-				foodcreate(fod,rand()%4+1,snake, d);
+				fod = foodcreate(fod,rand()%4+1,snake, d);
 			}
-			drowsnake(snake, d,' ');
-
 			snake[0].x = nextpos.x;
 			snake[0].y = nextpos.y;
 			drowsnake(snake, d, '#');
 		}
 		usleep(100000);
 	}
-	endwin();
-	return 0;
+endwin();
+return 0;
 }
