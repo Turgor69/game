@@ -1,6 +1,7 @@
-#include <ncursesw/ncurses.h>
+#include <ncurses.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <stdlib.h>
 struct pos {
 	int x;
 	int y;
@@ -33,6 +34,7 @@ int naprav(int ch)
 	case 's':   nap1 = 3;break;
 	case 'a':   nap1= 1; break;
 	case 'd':   nap1 = 0; break;
+	defalt 
 	}
 	return nap1;
 }
@@ -48,6 +50,7 @@ void foodcreate(struct food fod,int val, struct pos *snake, int d) {
 }
 void drowsnake(struct pos *snake, int d, char f)
 {
+	refresh();
 	for (int i = 0; i < d; i++)
 	{
 	 printpos(snake[i].y,snake[i].x, f);
@@ -63,8 +66,10 @@ void rost(struct pos *snake,struct pos headcord, int value, int d)
 }
 int main()
 {
+	
 	initscr();
-
+	noecho();
+	halfdelay(100);
 	for (int i = 0; i < max_X + 2; i++) {
 		printpos( i,0, '0');
 		printpos( i,max_Y + 1, '0');
@@ -77,6 +82,7 @@ int main()
 	struct food fod;
 	int nextnap[2][4] = {{1,-1,0,0},{0,0,1,-1}};
 	int d = 4;
+	int ro =0
 	struct pos headcord;
 	headcord.x = 5;
 	headcord.y = 15;
@@ -89,11 +95,9 @@ int main()
 	}
 	int nap1 = 0;
 	struct pos nextpos; 
-	int nap2 = 0;
 	int r = 0;
 	int ch;
 	bool gameover = false;
-	//int score = 0;
 	while (!gameover)
 	{
 		ch = getch();
@@ -110,10 +114,11 @@ int main()
 			}
 			drowsnake(snake, d, '#');
 			if ((fod.cord.x == headcord.x) && (fod.cord.y == headcord.y))
-				rost(snake,headcord, fod.value, d);
+			ro+=fod.value;
+			rost(snake,headcord,ro, d);
 			foodcreate(fod,rand()%4+1,snake, d);
 		}
-		usleep(10000 / d);
+		usleep(100000 / d);
 	}
 	endwin();
 return 0;
