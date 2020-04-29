@@ -100,8 +100,8 @@ int main()
 	{
 		ch = getch();
 		nap1 = naprav(ch, nap1);
-		nextpos.x = snake[0].x + nextnap[nap1][0];
-		nextpos.y = snake[0].y + nextnap[nap1][1];
+		nextpos.x = snake[0].x + nextnap[0][nap1];
+		nextpos.y = snake[0].y + nextnap[1][nap1];
 		gameover = proverka(nextpos, snake, d);
 		if (!gameover) {
 			struct pos lastpos;
