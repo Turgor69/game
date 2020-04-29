@@ -15,11 +15,14 @@ const int max_X = 40;
 const int max_Y = 30;
 bool proverka(struct pos cord, struct pos *snake, int d)
 {
+	if ((snake[0].x = max_X) || (snake[0].y = max_Y))
+	return false;
 	for (int i = 0; i < d; i++)
 	{
 		if ((cord.x == snake[i].x) && (cord.y == snake[i].y))
 		return true;
 	}
+	
 	return false;
 }
 void printpos(int y, int x,char f) {
@@ -42,8 +45,8 @@ void foodcreate(struct food fod,int val, struct pos *snake, int d) {
 		fod.cord.x = rand() % max_X + 1;
 		fod.cord.y = rand() % max_Y + 1;
 	} while (proverka(fod.cord,snake, d));
-	fod.value = val;
-	char valc = val;
+	fod.value = val + 48;
+	char valc = val + 48;
 	printpos(fod.cord.y,fod.cord.x,valc);
 	refresh();
 }
@@ -55,10 +58,10 @@ void drowsnake(struct pos *snake, int d, char f)
 	}
 }
 
-int rost(struct pos *snake, int value, int d)
+int rost(struct pos *snake,int x,int y, int value, int d)
 {
-		snake[d].x = snake[d-1].x;
-		snake[d].y = snake[d-1].y;
+		snake[d].x = x;
+		snake[d].y = y;
 		snake[d].symbol = '#';
 		return d++;
 }
@@ -91,7 +94,6 @@ int main()
 	refresh();
 	int nap1 = 3;
 	struct pos nextpos;
-	int r = 3;
 	int ch;
 	bool gameover = false;
 	while (!gameover)
@@ -102,22 +104,25 @@ int main()
 		nextpos.y = snake[0].y + nextnap[nap1][1];
 		gameover = proverka(nextpos, snake, d);
 		if (!gameover) {
+			struct pos lastpos;
+			lastpos.x = snake[d-1].x;
+			lastpos.y = snake[d-1].y;
+			for (int r=d-1;r>0;r--){
+				snake[r].x = snake[r-1].x;
+				snake[r].y = snake[r-1].y;
+			}
 			if ((fod.cord.x == snake[0].x) && (fod.cord.y == snake[0].y)){
 				ro+=fod.value;
 				if (ro>0){
-					d=rost(snake,ro, d);
+					d=rost(snake,lastpos.x,lastpos.y,ro, d);
 					ro--;
 				}
 				foodcreate(fod,rand()%4+1,snake, d);
 			}
 			drowsnake(snake, d,' ');
-			for (r;r<0;r--){
-				snake[r].x = snake[r-1].x;
-				snake[r].y = snake[r-1].y;
-			}
+
 			snake[0].x = nextpos.x;
 			snake[0].y = nextpos.y;
-			r=d-1;
 			drowsnake(snake, d, '#');
 		}
 		usleep(100000);
