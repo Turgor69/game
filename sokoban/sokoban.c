@@ -109,11 +109,14 @@ int naprav(int ch, int nap)
 bool win (struct pos *banplase,int plase,struct pos ban[],int banov)
 {
 	int f=0;
-	for (int i=0;i<6;i++)
-		for (int j=0;j<6;j++)
-			if (banplase[i].x == ban[j].x || banplase[i].x == ban[j].y)
+	for (int i=0;i<plase;i++){
+		for (int j=0;j<banov;j++){
+			if (banplase[i].x == ban[j].x && banplase[i].x == ban[j].y){
 				f++;
-	if (f == 6)
+			}	
+		}	
+	}
+	if (f == plase)
 	return true;
 	else
 	return false;
@@ -145,7 +148,7 @@ int main(){
 	strcat(s,".txt");
 	
 	FILE *in;
-	while(in = fopen(s,"rd")){
+	if(in = fopen(s,"rd")){
 		int i = 0;
 		int j = 0;
 		int mx = 0;
