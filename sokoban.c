@@ -10,7 +10,7 @@ struct pos{
 	int y;
 };
 	
-void printpos(int y, int x,char f) {
+void printpos(int x, int y,char f) {
 	move(y,x);
 	addch(f);
 	refresh();
@@ -97,10 +97,10 @@ int Collision1(struct pos *ban,struct pos *stena,struct pos *banplase,int banov,
 int naprav(int ch, int nap)
 {
 	switch (ch) {
-		case 'w': return 1;break;
-		case 's': return 0;break;
-		case 'a': return 3; break;
-		case 'd': return 2; break;
+		case 'a': return 1;break;
+		case 'd': return 0;break;
+		case 'w': return 3; break;
+		case 's': return 2; break;
 		case 'r': nap = -1; break;
 	}
 	return nap; 
