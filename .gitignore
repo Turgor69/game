@@ -1,4 +1,5 @@
 *.out
 *.o
-**/*.out
-**/*.o
+snake/*.out
+sokoban/*.o
+
