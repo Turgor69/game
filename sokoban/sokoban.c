@@ -67,7 +67,7 @@ void clear_all(struct pos *ban,struct pos *stena,struct pos *banplase,int banov,
 }
 
 int Col = -1;
-int Collision(struct pos *ban,struct pos *stena,struct pos *banplase,int banov, int sten, int plase, struct pos sok,bool  pr){
+int Proverkasok(struct pos *ban,struct pos *stena,struct pos *banplase,int banov, int sten, int plase, struct pos sok,bool  pr){
 	for (int i=0;i<banov;i++){
 		if (comp(ban[i],sok)) {
 			if (pr) Col = i;
@@ -77,17 +77,6 @@ int Collision(struct pos *ban,struct pos *stena,struct pos *banplase,int banov, 
 	for (int i=0;i<sten;i++){
 		if (comp(stena[i],sok)){
 			if (pr) Col = i;
- 			return 2;	
-		}
-	}		
-	return -1;
-}
-
-int Collision1(struct pos *ban,struct pos *stena,struct pos *banplase,int banov, int sten, int plase, struct pos sok){
-	
-	for (int i=0;i<sten;i++){
-		if (comp(stena[i],sok)){
-			
  			return 2;	
 		}
 	}		
@@ -207,7 +196,7 @@ int main(){
 			struct pos nextpos;
 			nextpos.x = sok.x + nextnap[0][nap];
 			nextpos.y = sok.y + nextnap[1][nap];
-				int proverka1 = Collision(ban,stena,banplase,banov,sten,plase,nextpos,true);
+				int proverka1 = Proverkasok(ban,stena,banplase,banov,sten,plase,nextpos,true);
 			if (proverka1 == -1){
 				sok = step(sok,nextpos.x,nextpos.y,'s');
 			}
@@ -215,7 +204,7 @@ int main(){
 				struct pos nextpos1;
 				nextpos1.x = nextpos.x + nextnap[0][nap];
 				nextpos1.y = nextpos.y + nextnap[1][nap];
-				int proverka2 = Collision(ban,stena,banplase,banov,sten,plase,nextpos1,false);
+				int proverka2 = Proverkasok(ban,stena,banplase,banov,sten,plase,nextpos1,false);
 				if (proverka2 == -1){
 					sok = step(sok,nextpos.x,nextpos.y,'s');
 					ban[Col] = step(ban[Col],nextpos1.x,nextpos1.y,'b');
