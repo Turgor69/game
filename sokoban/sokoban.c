@@ -111,7 +111,7 @@ bool win (struct pos *banplase,int plase,struct pos ban[],int banov)
 	int f=0;
 	for (int i=0;i<plase;i++){
 		for (int j=0;j<banov;j++){
-			if (banplase[i].x == ban[j].x && banplase[i].x == ban[j].y){
+			if (banplase[i].x == ban[j].x && banplase[i].y == ban[j].y){
 				f++;
 			}	
 		}	
