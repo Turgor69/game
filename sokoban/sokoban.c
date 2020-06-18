@@ -222,9 +222,10 @@ int main(){
 		}
 	if (!win(banplase,plase,ban,banov))
 	clear_all(ban,stena,banplase,banov,sten,plase,sok);
+	else
+	nap = -1;
 	}
 	endwin();
-	if (nap!=-1)
 	printf("Вы помогли кладовщику расставить все коробки\n");
 	return 0;
 }
