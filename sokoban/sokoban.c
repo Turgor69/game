@@ -117,8 +117,9 @@ int main(){
 	int count_obj = 0;
 	start_color();
 	setlocale(LC_CTYPE,"");
-	curs_set(0);//эта штука не даёт считывать дальше команды
+	curs_set(0);
 	noecho();
+	int nap = 1;
 	struct pos sok;
 	struct pos ban[5];//box
 	struct pos banplase[5];//plase
@@ -131,110 +132,99 @@ int main(){
 	
 	int level = 0;
 	char str[10];
-	sprintf(str, "%d", level);//если закоментить работает но нет поля
+	sprintf(str, "%d", level);
 	char s[100] = "pole";
-	//strcat(s, str);//если закоментить работает но нет поля
 	strcat(s,".txt");
 	
 	FILE *in;
-	if(in = fopen(s,"rd")){
-		int i = 0;
-		int j = 0;
-		int mx = 0;
-		banov = 0;
-		plase = 0;
-		sten = 0;
-		mx = 0;
-		count_on_point = 0;
-		count_obj = 0;
-		while (fscanf(in,"%c", &c) == 1){
-			
-			if (c == 's'){ //player
-				sok.x=i;
-				sok.y = j;			
-			}
-			if (c == 'b'){ //Box
-				ban[banov].x= i;
-				ban[banov].y = j;
-				banov++;		
-			}
-			if (c == '0'){ //place for Box
-				banplase[plase].x = i;
-				banplase[plase].y = j;
-				plase++;
-				count_obj++;			
-			}
-			if (c == '#'){ // walls
-				
-				stena[sten].x = i;
-				stena[sten].y = j;
-				sten++;				
-			}
+	while(nap !=-1){
+		if(in = fopen(s,"rd")){
+			int i = 0;
+			int j = 0;
+			int mx = 0;
+			banov = 0;
+			plase = 0;
+			sten = 0;
+			mx = 0;
+			count_on_point = 0;
+			count_obj = 0;
+			while (fscanf(in,"%c", &c) == 1){
+				if (c == 's'){ //player
+					sok.x=i;
+					sok.y = j;			
+				}
+				if (c == 'b'){ //Box
+					ban[banov].x= i;
+					ban[banov].y = j;
+					banov++;		
+				}
+				if (c == '0'){ //place for Box
+					banplase[plase].x = i;
+					banplase[plase].y = j;
+					plase++;
+					count_obj++;			
+				}
+				if (c == '#'){ // walls
+					
+					stena[sten].x = i;
+					stena[sten].y = j;
+					sten++;				
+				}
 
-			if (c == '\n'){
-				j++;
-				i = 0;		
-			}else{
-				i++;		
-				if (i>mx) mx = i;	
-			}	
-		}
-		fclose(in);
-		draw_all(ban,stena,banplase,banov,sten,plase,sok);
-		refresh();
-		int dir = -1;
-		//move(2,mx*2+5);
-		//printw("%s%i%s%i","Done: ",count_on_point,"/",count_obj);
-		//refresh();
-		bool restart = false;
-		int nextnap[2][4] = {{1,-1,0,0},{0,0,1,-1}};
-		int nap = -1;
-		while(!win(banplase,plase,ban,banov)){
-			int ch = getch();		
-			nap = naprav(ch, nap);
-			if(nap == -1) break;
-			struct pos nextpos;
-			nextpos.x = sok.x + nextnap[0][nap];
-			nextpos.y = sok.y + nextnap[1][nap];
-				int proverka1 = Proverkasok(ban,stena,banplase,banov,sten,plase,nextpos,true);
-			if (proverka1 == -1){
-				sok = step(sok,nextpos.x,nextpos.y,'s');
+				if (c == '\n'){
+					j++;
+					i = 0;		
+				}else{
+					i++;		
+					if (i>mx) mx = i;	
+				}	
 			}
-			if (proverka1 == 1){
-				struct pos nextpos1;
-				nextpos1.x = nextpos.x + nextnap[0][nap];
-				nextpos1.y = nextpos.y + nextnap[1][nap];
-				int proverka2 = Proverkasok(ban,stena,banplase,banov,sten,plase,nextpos1,false);
-				if (proverka2 == -1){
-					sok = step(sok,nextpos.x,nextpos.y,'s');
-					ban[Col] = step(ban[Col],nextpos1.x,nextpos1.y,'b');
-				}		
-			}
+			fclose(in);
 			draw_all(ban,stena,banplase,banov,sten,plase,sok);
-			
-			//move(2,mx*2+5);
-			//printw("%s%i%s%i","Done: ",count_on_point,"/",count_obj);
+			refresh();
+			int dir = -1;
+			bool restart = false;
+			int nextnap[2][4] = {{1,-1,0,0},{0,0,1,-1}};
+			int nap = -1;
+			while(!win(banplase,plase,ban,banov)){
+				int ch = getch();		
+				nap = naprav(ch, nap);
+				if(nap == -1) break;
+				struct pos nextpos;
+				nextpos.x = sok.x + nextnap[0][nap];
+				nextpos.y = sok.y + nextnap[1][nap];
+					int proverka1 = Proverkasok(ban,stena,banplase,banov,sten,plase,nextpos,true);
+				if (proverka1 == -1){
+					sok = step(sok,nextpos.x,nextpos.y,'s');
+				}
+				if (proverka1 == 1){
+					struct pos nextpos1;
+					nextpos1.x = nextpos.x + nextnap[0][nap];
+					nextpos1.y = nextpos.y + nextnap[1][nap];
+					int proverka2 = Proverkasok(ban,stena,banplase,banov,sten,plase,nextpos1,false);
+					if (proverka2 == -1){
+						sok = step(sok,nextpos.x,nextpos.y,'s');
+						ban[Col] = step(ban[Col],nextpos1.x,nextpos1.y,'b');
+					}		
+				}
+				draw_all(ban,stena,banplase,banov,sten,plase,sok);		
+			}
 
-			//refresh();
-			
+			i = 0;
+			refresh();
+			//if (!restart)level++;
+			//s[0] = '\0';
+			//strcat(s,"field");
+			//char str[10];
+			//sprintf(str, "%d", level);
+			//strcat(s, str);
+			//strcat(s,".txt");
 		}
-		//count_on_point = 0;
-		
-		//clear_all(ban,stena,banplase,banov,sten,plase,sok);
-
-		i = 0;
-		//move(2,mx*2+5);
-		//printw("%s%i%s%i","Done: ",count_on_point,"/",count_obj);
-		refresh();
-		//if (!restart)level++;
-		//s[0] = '\0';
-		//strcat(s,"field");
-		//char str[10];
-		//sprintf(str, "%d", level);
-		//strcat(s, str);
-		//strcat(s,".txt");
+	if (!win(banplase,plase,ban,banov))
+	clear_all(ban,stena,banplase,banov,sten,plase,sok);
 	}
-	endwin(); 
+	endwin();
+	if (nap!=-1)
 	printf("Вы помогли кладовщику расставить все коробки\n");
 	return 0;
 }
