@@ -110,6 +110,8 @@ int main() {
 	int count_on_point = 0;
 	int count_obj = 0;
 	start_color();
+	init_pair(1, COLOR_GREEN, COLOR_BLACK);
+	attron(COLOR_PAIR(1));
 	setlocale(LC_CTYPE, "");
 	curs_set(0);
 	noecho();
