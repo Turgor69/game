@@ -17,17 +17,22 @@ struct food {
 const int max_X = 40;
 const int max_Y = 30;
 
+void printpos(int y, int x,char f) {
+	move(y,x);
+	addch(f);
+}
+
 void field(int max_Y, int max_X) { 
 	for (int i = 0; i < max_Y + 2; i++) {
-		printposition(i, 0, '0');
-		printposition(i, max_X + 1, '0');	
+		printpos(i, 0, '0');
+		printpos(i, max_X + 1, '0');	
 	}
 	
 	for (int i = 0; i < max_X + 2; i++) {
-		printposition(0, i, '0');
-		printposition(max_Y + 1, i, '0');	
+		printpos(0, i, '0');
+		printpos(max_Y + 1, i, '0');	
 	}
-	attron(COLOR_PAIR(1));
+	attron(COLOR_PAIR(2));
 }
 
 bool check(struct pos cord, struct pos *snake, int d) {
@@ -39,10 +44,7 @@ bool check(struct pos cord, struct pos *snake, int d) {
 	return false;
 }
 
-void printpos(int y, int x,char f) {
-	move(y,x);
-	addch(f);
-}
+
 
 int naprav(int ch, int nap) {
 	switch (ch) {
@@ -80,9 +82,11 @@ int main() {
 	start_color();
 	init_pair(1, COLOR_GREEN, COLOR_BLACK);
 	init_pair(2, COLOR_RED, COLOR_BLACK);
-	attron(COLOR_PAIR(2));
+	attron(COLOR_PAIR(1));
 	curs_set(0);
 	nodelay(stdscr, TRUE);
+	
+	field(max_Y, max_X);
 	
 	struct pos snake[max_X * max_Y];
 	struct food fod;
