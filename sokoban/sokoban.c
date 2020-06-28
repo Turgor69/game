@@ -19,7 +19,6 @@ void printpos(int x, int y,char f) {
 void Clear(int x, int y){
 	move(y,x);
 	addch(' ');
-	//addch(' ');
 	refresh();
 }
 
@@ -212,13 +211,6 @@ int main(){
 
 			i = 0;
 			refresh();
-			//if (!restart)level++;
-			//s[0] = '\0';
-			//strcat(s,"field");
-			//char str[10];
-			//sprintf(str, "%d", level);
-			//strcat(s, str);
-			//strcat(s,".txt");
 		}
 	if (!win(banplase,plase,ban,banov))
 	clear_all(ban,stena,banplase,banov,sten,plase,sok);
